@@ -2,3 +2,4 @@ plotly==5.5.0
 pandas==1.4.0
 evalml==0.49.0
 numpy==1.21.5
+click==8.0.4
