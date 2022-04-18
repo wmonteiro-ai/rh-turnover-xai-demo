@@ -34,11 +34,11 @@ def get_pickles():
 	cols = df_sample_true.drop('Previsão', axis=1).columns.tolist()
 	df_sample_true['Nome'] = ['Mariana', 'Juan', 'Carlos', 'Patricia', 'Alexandra']
 	df_sample_true['Sobrenome'] = ['Luz', 'Garcia', 'Perez', 'Zanella', 'Neves']
-	df_sample_true = df_sample_true.head(5)[['Nome', 'Sobrenome'] + cols[-1:] + cols[:-1]]
+	df_sample_true = df_sample_true.head(5)[['Nome', 'Sobrenome'] + [cols[-1:] + cols[:-1]]]
 
 	df_sample_false['Nome'] = ['Pedro', 'Georgina', 'Natalia', 'Thiago', 'Denise']
 	df_sample_false['Sobrenome'] = ['Neto', 'Lima', 'Diaz', 'Batista', 'Garcez']
-	df_sample_false = df_sample_false.head(5)[['Nome', 'Sobrenome'] + cols[-1:] + cols[:-1]]
+	df_sample_false = df_sample_false.head(5)[['Nome', 'Sobrenome'] + [cols[-1:] + cols[:-1]]]
 	
 	return best_pipeline, expected_value, df_sample_true, df_sample_false, df_min_max, df_cat_vars, logical_types
 
