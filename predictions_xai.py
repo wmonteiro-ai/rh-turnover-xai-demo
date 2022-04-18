@@ -18,7 +18,7 @@ from evalml.model_understanding.prediction_explanations import explain_predictio
 ##########
 #Streamlit setup
 ##########
-st.set_page_config(page_title='Inteledge - Simulador de Turnover - RH', page_icon="🔭", layout="centered", initial_sidebar_state="auto", menu_items=None)
+st.set_page_config(page_title='Inteledge - Predição de Turnover - RH', page_icon="🔭", layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 ##########
 #Functions for the predictions and for the page layout
@@ -28,8 +28,18 @@ def get_pickles():
 	df_sample_true, df_sample_false, df_min_max, df_cat_vars, logical_types = pickle.load(open('sample_pt.pkl', 'rb'))
 	best_pipeline, expected_value = pickle.load(open('model_pt.pkl', 'rb'))
 	
-	df_sample_true = df_sample_true.round(2)
-	df_sample_false = df_sample_false.round(2)
+	df_sample_true = df_sample_true.sort_values(by='% certeza', ascending=False).round(2)
+	df_sample_false = df_sample_false.sort_values(by='% certeza', ascending=False).round(2)
+	
+	cols = df_sample_true.drop('Previsão', axis=1).columns.tolist()
+	df_sample_true = df_sample_true.head(5)[cols[-1:] + cols[:-1]]
+	df_sample_true['Nome'] = ['Mariana', 'Juan', 'Carlos', 'Patricia', 'Alexandra']
+	df_sample_true['Sobrenome'] = ['Luz', 'Garcia', 'Perez', 'Zanella', 'Neves']
+
+	df_sample_false = df_sample_false.head(5)[cols[-1:] + cols[:-1]]
+	df_sample_false['Nome'] = ['Pedro', 'Georgina', 'Natalia', 'Thiago', 'Denise']
+	df_sample_false['Sobrenome'] = ['Neto', 'Lima', 'Diaz', 'Batista', 'Garcez']
+	
 	return best_pipeline, expected_value, df_sample_true, df_sample_false, df_min_max, df_cat_vars, logical_types
 
 def plot_importances(best_pipeline, df):
@@ -107,18 +117,17 @@ col1, _, _ = st.columns(3)
 with col1:
 	st.image('inteledge.png')
 
-st.title('Simulador de Turnover - RH')
+st.title('Predição de Turnover - TI')
 st.markdown('Aqui na inteledge desenvolvemos Inteligência Artificial de alta performance para resolver problemas em RH. Possuímos conhecimento técnico e científico comprovado com uma experiência forjada no ambiente corporativo durante vários anos para entregar aquilo que é eficaz e que funciona com um forte embasamento teórico. Aqui, demonstramos para você um exemplo de algoritmo que prevê o risco de saída de um profissional a partir da sua base histórica. Interessante, não é? Ficou interessado? Entre em contato conosco no @inteledge.lab no [Instagram](https://instagram.com/inteledge.lab) ou no [LinkedIn](https://www.linkedin.com/company/inteledge/)!')
 
 st.write('Primeiramente, veja uma amostra de algumas previsões do algoritmo para uma base histórica. É este o tipo de resultado que você terá acesso.')
 st.header('Últimas previsões do algoritmo')
 
-st.write('Amostra de 5 pessoas que pedirão demissão:')
-cols = df_sample_true.drop('Previsão', axis=1).columns.tolist()
-st.dataframe(df_sample_true.tail(5)[cols[-1:] + cols[:-1]])
+st.write('Amostra de 5 pessoas com maior probabilidade de pedir demissão:')
+st.dataframe(df_sample_true)
 
-st.write('Amostra de 5 pessoas que não pedirão demissão:')
-st.dataframe(df_sample_false.tail(5)[cols[-1:] + cols[:-1]])
+st.write('Amostra de 5 pessoas com maior probabilidade de **não** pedir demissão:')
+st.dataframe(df_sample_false)
 
 ##########
 #Section 2 - Simulator
